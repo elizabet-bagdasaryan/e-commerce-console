@@ -1,22 +1,27 @@
-let products = [];
+import mongoose from "mongoose";
 
-function findProdIndex(productId) {
-  return products.findIndex((product) => product.id === productId);
-}
+const productSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  id: { type: String, required: true, unique: true },
+});
 
-export function getProdById(productId) {
-  return products.find((product) => product.id === productId);
-}
+const Product = mongoose.model("Product", productSchema);
 
-export function saveProduct(name, price, id) {
-  const existProdIndex = findProdIndex(id);
-
-  if (existProdIndex !== -1) {
-    products[existProdIndex].name = name;
-    products[existProdIndex].price = price;
+export async function getProdById(productId) {
+  try {
+    const product = await Product.findOne({ id: productId });
+    return product;
+  } catch (error) {
+    console.error("Error fetching product from the database:", error);
+    return null;
   }
-  //tu arsebobs vaaupdatebt
-  else {
-    products.push({ name, price, id });
+}
+
+export async function saveProduct(name, price, id) {
+  try {
+    await Product.updateOne({ id }, { name, price }, { upsert: true });
+  } catch (error) {
+    console.error("Error saving product to the database:", error);
   }
 }

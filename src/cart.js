@@ -1,73 +1,87 @@
-let cart = [];
+import mongoose from "mongoose";
 
-function getCartProdById(productId) {
-  return cart.find((item) => item.productId === productId);
-}
+const cartItemSchema = new mongoose.Schema({
+  productId: { type: String, required: true, unique: true },
+  quantity: { type: Number, required: true },
+  price: { type: Number, required: true },
+});
 
-export function addToCart(productId, quantity, price) {
-  const existCartItem = getCartProdById(productId);
+const CartItem = mongoose.model("CartItem", cartItemSchema);
 
-  if (existCartItem) {
-    existCartItem.quantity += quantity;
-  } else {
-    cart.push({ productId, quantity, price });
+export async function getCartProdById(productId) {
+  try {
+    const cartProduct = await CartItem.findOne({ productId });
+    return cartProduct;
+  } catch (error) {
+    console.error("Error finding cart product:", error);
+    return null;
   }
 }
 
-export function order(productId, quantity) {
-  const cartProduct = getCartProdById(productId);
-  if (!cartProduct || cartProduct.quantity < quantity) {
-    console.log("Not enough quantity in the cart");
-    return;
+export async function addToCart(productId, quantity, price) {
+  try {
+    const cartProduct = await CartItem.findOne({ productId });
+    if (cartProduct) {
+      cartProduct.quantity += quantity;
+      await cartProduct.save();
+    } else {
+      const newCartItem = new CartItem({ productId, quantity, price });
+      await newCartItem.save();
+    }
+  } catch (error) {
+    console.error("Error adding product to the cart:", error);
   }
-  cartProduct.quantity -= quantity;
+}
+
+export async function order(productId, quantity) {
+  try {
+    const cartProduct = await CartItem.findOne({ productId });
+    if (!cartProduct || cartProduct.quantity < quantity) {
+      console.log("Not enough quantity in the cart");
+      return;
+    }
+    cartProduct.quantity -= quantity;
+    await cartProduct.save();
+  } catch (error) {
+    console.error("Error placing order:", error);
+  }
 }
 
 export function getCartQuantity(productId) {
   const cartProduct = getCartProdById(productId);
   return cartProduct ? cartProduct.quantity : 0;
 }
-export function avgPrice(productId) {
-  const cartProduct = getCartProdById(productId);
-  if (!cartProduct) return 0;
+
+export async function avgPrice(productId) {
+  const cartProduct = await getCartProdById(productId);
+
+  if (!cartProduct || cartProduct.quantity === 0) {
+    return 0;
+  }
 
   const totalPrice = cartProduct.quantity * cartProduct.price;
   const totalQuant = cartProduct.quantity;
   return totalPrice / totalQuant;
 }
 
-export function getFewestProd() {
-  if (cart.lenth === 0) {
-    console.log("The cart is empty");
-    return;
+export async function getFewestProd() {
+  try {
+    const fewestProduct = await CartItem.findOne().sort("quantity").limit(1);
+    return fewestProduct;
+  } catch (error) {
+    console.error("Error finding fewest product:", error);
+    return null;
   }
-  let fewestProduct = cart[0];
-
-  for (const item of cart) {
-    if (item.quantity < fewestProduct.quantity) {
-      fewestProduct = item;
-    }
-  }
-  return fewestProduct;
 }
 
-export function getMostPopularProd() {
-  if (cart.lenth === 0) {
-    console.log("The cart is empty.");
-    return;
+export async function getMostPopularProd() {
+  try {
+    const mostPopularProduct = await CartItem.findOne()
+      .sort("-quantity")
+      .limit(1);
+    return mostPopularProduct;
+  } catch (error) {
+    console.error("Error finding most popular product:", error);
+    return null;
   }
-  const productIdFreq = {};
-
-  for (const item of cart) {
-    if (productIdFreq[item.productId]) {
-      productIdFreq[item.productId]++;
-    } else {
-      productIdFreq[item.productId] = 1;
-    }
-  }
-  let mostPopularProductId = Object.keys(productIdFreq).reduce((a, b) =>
-    productIdFreq[a] > productIdFreq[b] ? a : b
-  );
-
-  return mostPopularProductId;
 }
