@@ -1,0 +1,27 @@
+{
+  "name": "e-commerce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "product:save": "node src/server.js",
+    "product:purchase": "node src/server.js",
+    "product:order": "node src/server.js",
+    "product:get-quantity": "node src/server.js",
+    "product:average-price": "node src/server.js",
+    "product:profit": "node src/server.js",
+    "product:fewest": "node src/server.js",
+    "product:popular": "node src/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "readline-sync": "^1.4.10"
+  }
+}
