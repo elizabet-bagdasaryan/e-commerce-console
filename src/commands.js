@@ -16,7 +16,7 @@ export async function saveProductCommand() {
 
   await saveProduct(name, price, id);
 
-  return "Product saved successfully!";
+  return "Product saved successfully! \n";
 }
 
 export async function purchaseProductCommand() {
@@ -26,7 +26,7 @@ export async function purchaseProductCommand() {
 
   await addToCart(productId, quantity, price);
 
-  return "Product added to the cart!";
+  return "Product added to the cart! \n";
 }
 
 export async function orderProductCommand() {
@@ -35,7 +35,7 @@ export async function orderProductCommand() {
 
   await order(productId, quantity);
 
-  return "Order placed successfully!";
+  return "Order placed successfully! \n";
 }
 
 export async function getQuantityCommand() {
@@ -46,7 +46,7 @@ export async function getQuantityCommand() {
     const quantity = cartProduct.quantity;
     return `Quantity: ${quantity}`;
   } else {
-    return "Product not found in the cart.";
+    return "Product not found in the cart. \n";
   }
 }
 
@@ -54,7 +54,7 @@ export async function averagePriceCommand() {
   const productId = readline.question("Enter the product ID: ");
   const averagePrice = await avgPrice(productId);
 
-  return `Average price: ${averagePrice}`;
+  return `Average price: ${averagePrice} \n`;
 }
 
 export async function profitCommand() {
@@ -64,7 +64,7 @@ export async function profitCommand() {
   const orderAverage = product ? product.price : 0;
   const profit = cartAverage - orderAverage;
 
-  return `Profit: ${profit}`;
+  return `Profit: ${profit} \n`;
 }
 
 export async function fewestCommand() {
@@ -72,9 +72,9 @@ export async function fewestCommand() {
 
   if (fewestProduct) {
     const product = await getProdById(fewestProduct.productId);
-    return `The product with the fewest quantity is ${product.name}.`;
+    return `The product with the fewest quantity is ${product.name}.\n`;
   } else {
-    return "The cart is empty.";
+    return "The cart is empty.\n";
   }
 }
 
@@ -84,11 +84,11 @@ export async function popularCommand() {
   if (mostPopularProductId) {
     const product = await getProdById(mostPopularProductId.productId);
     if (product) {
-      return `The most popular product is ${product.name}.`;
+      return `The most popular product is ${product.name}. \n`;
     } else {
-      return "The most popular product is not found.";
+      return "The most popular product is not found. \n";
     }
   } else {
-    return "The cart is empty.";
+    return "The cart is empty. \n";
   }
 }
