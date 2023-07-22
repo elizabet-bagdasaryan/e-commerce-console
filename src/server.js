@@ -23,17 +23,17 @@ async function main() {
   }
 
   console.log("Available commands:");
-  console.log("1. npm run product:save");
-  console.log("2. npm run product:purchase");
-  console.log("3. npm run product:order");
-  console.log("4. npm run product:get-quantity");
-  console.log("5. npm run product:average-price");
-  console.log("6. npm run product:profit");
-  console.log("7. npm run product:fewest");
-  console.log("8. npm run product:popular");
+  console.log("npm run product:save");
+  console.log("npm run product:purchase");
+  console.log("npm run product:order");
+  console.log("npm run product:get-quantity");
+  console.log("npm run product:average-price");
+  console.log("npm run product:profit");
+  console.log("npm run product:fewest");
+  console.log("npm run product:popular \n");
 
   while (true) {
-    const input = readline.question("Enter the command: \n");
+    const input = readline.question("Enter the command: \n \n");
 
     switch (input) {
       case "npm run product:save":
